@@ -11,18 +11,3 @@ module.exports = (req, res) => {
     const fileStream = fs.createReadStream(file);
     fileStream.pipe(res);
 }
-
-
-
-
-
-
-
-
-// const db = require('../../entities/Database');
-
-// module.exports = async (req, res) => {
-//   const svgId = req.params.id;
-
-//   return res.json(db.findOne(svgId).toPublicJSON());
-// }
