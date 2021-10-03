@@ -20,7 +20,7 @@ class Database extends EventEmitter {
       for (let id in dump.ids) {
         const img = dump.ids[id];
 
-        this.ids[id] = new Img(img.id, img.created, img.size);
+        this.ids[id] = new Img(img.id, img.created, img.size, img.fileName);
       }
     }
   }
@@ -43,15 +43,18 @@ class Database extends EventEmitter {
   }
 
   find() {
-      const allFiles = Object.values(this.ids);
+      return Object.values(this.ids);
+  }
 
-      return allFiles;
+  getFileName(imgId) {
+    const imgRaw = this.ids[imgId]
+    return imgRaw.fileName;
   }
 
   toJSON() {
-      return {
-          ids: this.ids
-      }
+    return {
+        ids: this.ids
+    }
   }
 }
 

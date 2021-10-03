@@ -9,6 +9,6 @@ module.exports = async (req, res) => {
         res.json({id: req.file.id});
      } catch (err) {
          console.log(err);
-         res.sendStatus(401)
+         res.sendStatus(400)
      }
 }

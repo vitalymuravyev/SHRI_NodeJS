@@ -5,14 +5,12 @@ const { imageFolder } = require('./config');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      // '/files' это директория в которую будут сохранятся файлы 
       cb(null, imageFolder);
     },
     filename: (req, file, cb) => {
-  // Возьмем оригинальное название файла, и под этим же названием сохраним его на сервере
       file.id = generateId();
       file.created = Date.now();
-      const { originalname } = file
+      const { originalname } = file;
       cb(null, originalname)
     }
 })
