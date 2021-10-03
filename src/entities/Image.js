@@ -6,10 +6,11 @@ const { deleteFile, uploadFile } = require('../utils/fs');
 const { imageToDisk } = require('../utils/imageToDisk');
 
 module.exports = class Image {
-    constructor(id, created, fileName) {
+    constructor(id, created, size, fileName) {
         this.id = id || generateId();
         this.created = created || Date.now();
-        this.fileName = fileName || '';
+        this.size = size || '';
+        this.fileName = this.fileName || '';
     }
 
     // async saveFile(content) {
@@ -18,5 +19,13 @@ module.exports = class Image {
 
     async removeImage() {
         await deleteFile(path.resolve(imageFolder, this.fileName))
+    }
+
+    toJSON() {
+        return {
+            id: this.id,
+            created: this.created,
+            size: this.size,
+        }
     }
 }

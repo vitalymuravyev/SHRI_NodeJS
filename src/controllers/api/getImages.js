@@ -1,4 +1,8 @@
+const db = require('../../entities/Database');
 
 module.exports = (req, res) => {
-    return res.json({fds: 'fdsfs'});
+
+    const allImg = db.find().map((item) => item.toJSON())
+
+    return res.json({ ...allImg });
 }

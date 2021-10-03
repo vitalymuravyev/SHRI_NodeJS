@@ -20,5 +20,5 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 module.exports = {
-    imageToDisk: upload.single('multipart/form-data')
+    imageToDisk: upload.single('image')
 }

@@ -20,7 +20,7 @@ class Database extends EventEmitter {
       for (let id in dump.ids) {
         const img = dump.ids[id];
 
-        this.ids[id] = new Img(img.id, img.created, img.fileName);
+        this.ids[id] = new Img(img.id, img.created, img.size);
       }
     }
   }
@@ -32,7 +32,7 @@ class Database extends EventEmitter {
 
   async remove(imgId) {
     const imgRaw = this.ids[imgId];
-    const img = new Img(imgRaw.id, imgRaw.created, imgRaw.fileName);
+    const img = new Img(imgRaw.id, imgRaw.created, imgRaw.size, imgRaw.fileName);
 
     await img.removeImage();
 
@@ -40,6 +40,12 @@ class Database extends EventEmitter {
 
     this.emit('changed');
     return imgId;
+  }
+
+  find() {
+      const allFiles = Object.values(this.ids);
+
+      return allFiles;
   }
 
   toJSON() {
