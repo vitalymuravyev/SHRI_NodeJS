@@ -1,21 +1,22 @@
 const path = require('path');
 const { imageFolder } = require('../utils/config');
 
-const { generateId } = require('..utils/idGenerator');
+const { generateId } = require('../utils/idGenerator');
 const { deleteFile, uploadFile } = require('../utils/fs');
+const { imageToDisk } = require('../utils/imageToDisk');
 
 module.exports = class Image {
-    constructor(id, createdAt) {
+    constructor(id, created, fileName) {
         this.id = id || generateId();
-        this.createdAt = createdAt || Date.now();
-        this.fileName = `img-${this.id}.jpg`;
+        this.created = created || Date.now();
+        this.fileName = fileName || '';
     }
 
-    async saveFile(content) {
-        await uploadFile(path.resolve(imageFolder, this.fileName), content);
-    }
+    // async saveFile(content) {
+    //     console.log('dsfdfds');
+    // }
 
     async removeImage() {
-        await deleteFile(path.resolve(imageFolder, this.fileName));
+        await deleteFile(path.resolve(imageFolder, this.fileName))
     }
 }

@@ -1,115 +1,60 @@
-
-
-
-
-// const { EventEmitter } = require('events');
+const { EventEmitter } = require('events');
 // const { existsSync } = require('fs');
-// const { dbDumpFile } = require('../config');
-// const { writeFile } = require('../utils/fs');
-// const { prettifyJsonToString } = require('../utils/prettifyJsonToString');
-// const Svg = require('./Svg');
+const { writeFile } = require('fs/promises');
+const { dbDumpFile } = require('../utils/config');
+const { prettifyJsonToString } = require('../utils/prettifyJsonToString');
+const Img = require('./Image')
 
 class Database extends EventEmitter {
   constructor() {
     super();
-
-    this.likedIds = {};
-    this.idToSvg = {};
+    this.ids = {};
   }
 
-  async initFromDump() {
-    if (existsSync(dbDumpFile) === false) {
-      return;
-    }
-
+  async init() {
     const dump = require(dbDumpFile);
 
-    if (typeof dump.idToSvg === 'object') {
-      this.idToSvg = {};
+    if (typeof dump.ids === 'object') {
+      this.ids = {};
 
-      for (let id in dump.idToSvg) {
-        const svg = dump.idToSvg[id];
+      for (let id in dump.ids) {
+        const img = dump.ids[id];
 
-        this.idToSvg[id] = new Svg(svg.id, svg.createdAt);
+        this.ids[id] = new Img(img.id, img.created, img.fileName);
       }
     }
-
-    if (typeof dump.likedIds === 'object') {
-      this.likedIds = { ...dump.likedIds };
-    }
   }
 
-  async insert(svg, originalContent) {
-    await svg.saveOriginal(originalContent);
-
-    this.idToSvg[svg.id] = svg;
-
+  async insert(file) {
+    this.ids[file.id] = file;
     this.emit('changed');
   }
 
-  setLiked(svgId, value) {
-    if (value === false) {
-      delete this.likedIds[svgId];
-    } else {
-      this.likedIds[svgId] = true;
-    }
+  async remove(imgId) {
+    const imgRaw = this.ids[imgId];
+    const img = new Img(imgRaw.id, imgRaw.created, imgRaw.fileName);
+
+    await img.removeImage();
+
+    delete this.ids[imgId];
 
     this.emit('changed');
-  }
-
-  async remove(svgId) {
-    const svgRaw = this.idToSvg[svgId];
-
-    const svg = new Svg(svgRaw.id, svgRaw.createdAt);
-
-    await svg.removeOriginal();
-
-    delete this.idToSvg[svgId];
-    delete this.likedIds[svgId];
-
-    this.emit('changed');
-
-    return svgId;
-  }
-
-  findOne(svgId) {
-    const svgRaw = this.idToSvg[svgId];
-
-    if (!svgRaw) {
-      return null;
-    }
-
-    const svg = new Svg(svgRaw.id, svgRaw.createdAt);
-
-    return svg;
-  }
-
-  find(isLiked = false) {
-    let allSvgs = Object.values(this.idToSvg);
-
-    if (isLiked === true) {
-      allSvgs = allSvgs.filter((svg) => this.likedIds[svg.id]);
-    }
-
-    allSvgs.sort((svgA, svgB) => svgB.createdAt - svgA.createdAt);
-
-    return allSvgs;
+    return imgId;
   }
 
   toJSON() {
-    return {
-      idToSvg: this.idToSvg,
-      likedIds: this.likedIds,
-    };
+      return {
+          ids: this.ids
+      }
   }
 }
 
 const db = new Database();
 
-db.initFromDump();
+db.init();
 
 db.on('changed', () => {
-  writeFile(dbDumpFile, prettifyJsonToString(db.toJSON()));
-});
+    writeFile(dbDumpFile, prettifyJsonToString(db.toJSON()));
+})
 
 module.exports = db;

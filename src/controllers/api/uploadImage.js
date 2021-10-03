@@ -1,12 +1,14 @@
-const mutler = require('multer');
-const { imageFolder } = require('../../utils/config');
+const db = require('../../entities/Database');
+const Img = require('../../entities/Image');
 
-const upload = mutler({ dest: imageFolder });
-
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
     try {
+        const { id, created, originalname } = req.file;
+        const newFile = new Img(id, created, originalname);
+        await db.insert(newFile)
         res.json({id: req.file.id});
      } catch (err) {
-         res.send(400)
+         console.log(err);
+         res.sendStatus(401)
      }
 }

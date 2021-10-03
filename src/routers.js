@@ -12,7 +12,7 @@ apiRouter.post('/upload', imageToDisk, api.uploadImage);
 
 // apiRouter.get('/list', api.getImages);
 // apiRouter.get('/image/:id', api.getImage);
-// apiRouter.delete('/image/:id', api.deleteImage);
+apiRouter.delete('/image/:id', api.deleteImage);
 // apiRouter.get('/merge');
 
 exports.apiRouter = apiRouter;
