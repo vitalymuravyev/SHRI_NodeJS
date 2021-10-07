@@ -1,3 +1,4 @@
+// unused variable
 const { unlink, writeFile, readFile } = require('fs/promises');
 
 module.exports = {
