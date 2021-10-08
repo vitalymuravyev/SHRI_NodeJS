@@ -1,7 +1,6 @@
 const db = require('../../entities/Database');
 
 module.exports = async (req, res) => {
-
     try {
         const imgId = req.params.id;
         const id = await db.remove(imgId);
@@ -10,5 +9,4 @@ module.exports = async (req, res) => {
     } catch (error) {
         res.sendStatus(404);
     }
-    
 }

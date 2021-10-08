@@ -1,5 +1,5 @@
 const { EventEmitter } = require('events');
-// const { existsSync } = require('fs');
+// const { existsSync } = require('fs'); мертвый код
 const { writeFile } = require('fs/promises');
 const { dbDumpFile } = require('../utils/config');
 const { prettifyJsonToString } = require('../utils/prettifyJsonToString');
@@ -8,6 +8,9 @@ const Img = require('./Image')
 class Database extends EventEmitter {
   constructor() {
     super();
+    // вот тут у тебя теряется связь с доменом, ids вообще абстрактная штука,
+    // лучше images, но тоже плохо, тк такое имя говорит что это массив картинок,
+    // поэтому придется сделать imagesMap, в данном варианте тип данных в названии не так плохо
     this.ids = {};
   }
 
@@ -39,6 +42,7 @@ class Database extends EventEmitter {
     delete this.ids[imgId];
 
     this.emit('changed');
+
     return imgId;
   }
 
